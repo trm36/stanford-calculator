@@ -11,7 +11,19 @@ import UIKit
 class ViewController: UIViewController {
     
     let displayLabel = UILabel()
-    var userIsInTheMiddleOfTypingANumber: Bool = false
+    let displayBackground = UIView()
+    var userIsInTheMiddleOfTypingANumber = false
+    var operandStack: Array<Double> = []
+    var displayValue: Double {
+        get {
+            return (displayLabel.text! as NSString).doubleValue
+        }
+        
+        set {
+            self.displayLabel.text = "\(newValue)"
+            self.userIsInTheMiddleOfTypingANumber = false
+        }
+    }
     
 
     override func viewDidLoad() {
@@ -19,14 +31,18 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         
         //Row 1
+        self.displayBackground.backgroundColor = UIColor.lightGrayColor()
+        self.view.addSubview(self.displayBackground)
+        
         self.displayLabel.text = "0"
         self.displayLabel.font = UIFont.systemFontOfSize(32)
         self.displayLabel.textAlignment = NSTextAlignment.Right
-        self.displayLabel.backgroundColor = UIColor.lightGrayColor()
-        self.view.addSubview(displayLabel)
+        self.view.addSubview(self.displayLabel)
         
         self.displayLabel.alignTop("20", leading: "5", toView: self.view)
         self.displayLabel.alignTrailingEdgeWithView(self.view, predicate: "-5")
+        self.displayLabel.constrainHeight("50")
+        self.displayBackground.alignTop("0", leading: "0", bottom: "0", trailing: "0", toView: self.displayLabel)
         
         //Row 2
         let button7 = UIButton()
@@ -47,16 +63,24 @@ class ViewController: UIViewController {
         button9.addTarget(self, action: "appendDigit:", forControlEvents: .TouchUpInside)
         self.view.addSubview(button9)
         
+        let buttonDivide = UIButton()
+        buttonDivide.setTitle("÷", forState: .Normal)
+        buttonDivide.setTitleColor(UIColor.blackColor(), forState: .Normal)
+        buttonDivide.addTarget(self, action: "operate:", forControlEvents: .TouchUpInside)
+        self.view.addSubview(buttonDivide)
+        
         button7.constrainTopSpaceToView(self.displayLabel, predicate: "5")
         button7.alignLeadingEdgeWithView(self.displayLabel, predicate: "0")
-        button7.constrainHeight("50")
         
         button8.alignTopEdgeWithView(button7, predicate: "0")
         button8.constrainLeadingSpaceToView(button7, predicate: "0")
         
         button9.alignTopEdgeWithView(button7, predicate: "0")
         button9.constrainLeadingSpaceToView(button8, predicate: "0")
-        button9.alignTrailingEdgeWithView(self.displayLabel, predicate: "0")
+        
+        buttonDivide.alignTopEdgeWithView(button7, predicate: "0")
+        buttonDivide.constrainLeadingSpaceToView(button9, predicate: "0")
+        buttonDivide.alignTrailingEdgeWithView(self.displayLabel, predicate: "0")
         
         //Row 3
         let button4 = UIButton()
@@ -77,77 +101,179 @@ class ViewController: UIViewController {
         button6.addTarget(self, action: "appendDigit:", forControlEvents: .TouchUpInside)
         self.view.addSubview(button6)
         
+        let buttonMultiply = UIButton()
+        buttonMultiply.setTitle("×", forState: .Normal)
+        buttonMultiply.setTitleColor(UIColor.blackColor(), forState: .Normal)
+        buttonMultiply.addTarget(self, action: "operate:", forControlEvents: .TouchUpInside)
+        self.view.addSubview(buttonMultiply)
+        
         button4.constrainTopSpaceToView(button7, predicate: "0")
         button4.alignLeadingEdgeWithView(self.displayLabel, predicate: "0")
-        button4.constrainHeight("50")
         
         button5.alignTopEdgeWithView(button4, predicate: "0")
         button5.constrainLeadingSpaceToView(button4, predicate: "0")
         
         button6.alignTopEdgeWithView(button4, predicate: "0")
         button6.constrainLeadingSpaceToView(button5, predicate: "0")
-        button6.alignTrailingEdgeWithView(self.displayLabel, predicate: "0")
+        
+        buttonMultiply.alignTopEdgeWithView(button4, predicate: "0")
+        buttonMultiply.constrainLeadingSpaceToView(button6, predicate: "0")
+        buttonMultiply.alignTrailingEdgeWithView(self.displayLabel, predicate: "0")
         
         //Row 4
         let button1 = UIButton()
+        button1.backgroundColor = .redColor()
         button1.setTitle("1", forState: .Normal)
         button1.setTitleColor(UIColor.blackColor(), forState: .Normal)
         button1.addTarget(self, action: "appendDigit:", forControlEvents: .TouchUpInside)
         self.view.addSubview(button1)
         
         let button2 = UIButton()
+        button2.backgroundColor = .yellowColor()
         button2.setTitle("2", forState: .Normal)
         button2.setTitleColor(UIColor.blackColor(), forState: .Normal)
         button2.addTarget(self, action: "appendDigit:", forControlEvents: .TouchUpInside)
         self.view.addSubview(button2)
         
         let button3 = UIButton()
+        button3.backgroundColor = .orangeColor()
         button3.setTitle("3", forState: .Normal)
         button3.setTitleColor(UIColor.blackColor(), forState: .Normal)
         button3.addTarget(self, action: "appendDigit:", forControlEvents: .TouchUpInside)
         self.view.addSubview(button3)
         
+        let buttonSubtract = UIButton()
+        buttonSubtract.setTitle("−", forState: .Normal)
+        buttonSubtract.setTitleColor(UIColor.blackColor(), forState: .Normal)
+        buttonSubtract.addTarget(self, action: "operate:", forControlEvents: .TouchUpInside)
+        self.view.addSubview(buttonSubtract)
+        
         button1.constrainTopSpaceToView(button4, predicate: "0")
         button1.alignLeadingEdgeWithView(self.displayLabel, predicate: "0")
-        button1.constrainHeight("50")
         
         button2.alignTopEdgeWithView(button1, predicate: "0")
         button2.constrainLeadingSpaceToView(button1, predicate: "0")
         
         button3.alignTopEdgeWithView(button1, predicate: "0")
         button3.constrainLeadingSpaceToView(button2, predicate: "0")
-        button3.alignTrailingEdgeWithView(self.displayLabel, predicate: "0")
-        
+
+        buttonSubtract.alignTopEdgeWithView(button1, predicate: "0")
+        buttonSubtract.constrainLeadingSpaceToView(button3, predicate: "0")
+        buttonSubtract.alignTrailingEdgeWithView(self.displayLabel, predicate: "0")
         
         //Row 5
+        let buttonEnter = UIButton()
+        buttonEnter.backgroundColor = .purpleColor()
+        buttonEnter.setTitle("↩︎", forState: .Normal)
+        buttonEnter.setTitleColor(UIColor.blackColor(), forState: .Normal)
+        buttonEnter.addTarget(self, action: "enter", forControlEvents: .TouchUpInside)
+        self.view.addSubview(buttonEnter)
+        
         let button0 = UIButton()
+        button0.backgroundColor = .blueColor()
         button0.setTitle("0", forState: .Normal)
         button0.setTitleColor(UIColor.blackColor(), forState: .Normal)
         button0.addTarget(self, action: "appendDigit:", forControlEvents: .TouchUpInside)
         self.view.addSubview(button0)
         
-        button0.constrainTopSpaceToView(button1, predicate: "0")
-        button0.alignLeadingEdgeWithView(self.displayLabel, predicate: "0")
-        button0.constrainHeight("50")
+        let buttonSqrt = UIButton()
+        buttonSqrt.setTitle("√", forState: .Normal)
+        buttonSqrt.setTitleColor(UIColor.blackColor(), forState: .Normal)
+        buttonSqrt.addTarget(self, action: "operate:", forControlEvents: .TouchUpInside)
+        self.view.addSubview(buttonSqrt)
         
-        UIView.equalHeightForViews([button0, button1, button2, button3, button4, button5, button6, button7, button8, button9])
-        UIView.equalWidthForViews([button0, button1, button2, button3, button4, button5, button6, button7, button8, button9])
+        let buttonAdd = UIButton()
+        buttonAdd.setTitle("+", forState: .Normal)
+        buttonAdd.setTitleColor(UIColor.blackColor(), forState: .Normal)
+        buttonAdd.addTarget(self, action: "operate:", forControlEvents: .TouchUpInside)
+        self.view.addSubview(buttonAdd)
         
+        buttonEnter.constrainTopSpaceToView(button1, predicate: "0")
+        buttonEnter.alignLeadingEdgeWithView(self.displayLabel, predicate: "0")
+        buttonEnter.alignBottomEdgeWithView(self.view, predicate: "-5")
+        
+        button0.alignTopEdgeWithView(buttonEnter, predicate: "0")
+        button0.constrainLeadingSpaceToView(buttonEnter, predicate: "0")
+        
+        buttonSqrt.alignTopEdgeWithView(buttonEnter, predicate: "0")
+        buttonSqrt.constrainLeadingSpaceToView(button0, predicate: "0")
+        
+        buttonAdd.alignTopEdgeWithView(buttonEnter, predicate: "0")
+        buttonAdd.constrainLeadingSpaceToView(buttonSqrt, predicate: "0")
+        buttonAdd.alignTrailingEdgeWithView(self.displayLabel, predicate: "0")
+        
+        UIView.equalHeightForViews([button0, button1, button2, button3, button4, button5, button6, button7, button8, button9, buttonEnter, buttonDivide, buttonMultiply, buttonSubtract, buttonAdd, buttonSqrt])
+        UIView.equalWidthForViews([button0, button1, button2, button3, button4, button5, button6, button7, button8, button9, buttonEnter, buttonDivide, buttonMultiply, buttonSubtract, buttonAdd, buttonSqrt])
+    }
+    
+    
+    func operate(sender: UIButton) {
+        let operation = sender.currentTitle!
+        
+        if self.userIsInTheMiddleOfTypingANumber {
+            enter()
+        }
+        
+        
+        switch operation {
+            case "÷" :
+                performOperation({ $1 / $0 })
+            case "×" :
+                performOperation({ $1 * $0 })
+            case "−" :
+                performOperation({ $1 - $0 })
+            case "+" :
+                performOperation({ $1 + $0 })
+            case "√" :
+                performOperation({ sqrt($0) })
+            default :
+                break
+        }
+    }
+    
+    private func performOperation(operation: (Double, Double) -> Double) {
+        if self.operandStack.count >= 2 {
+            self.displayValue = operation(self.operandStack.removeLast(), self.operandStack.removeLast())
+            enter()
+        }
+    }
+    
+    private func performOperation(operation: Double -> Double) {
+        if self.operandStack.count >= 1 {
+            self.displayValue = operation(self.operandStack.removeLast())
+            enter()
+        }
     }
     
     func appendDigit(sender: UIButton) {
         let digit = sender.currentTitle!
         
-        if userIsInTheMiddleOfTypingANumber {
-            self.displayLabel.text = self.displayLabel.text! + digit
-        } else {
-            self.displayLabel.text = digit
-            self.userIsInTheMiddleOfTypingANumber = true
+        if !(digit == "0" && self.displayLabel.text! == "0") {
+            if userIsInTheMiddleOfTypingANumber && self.displayLabel.text! != "0" {
+                self.displayLabel.text = self.displayLabel.text! + digit
+            } else {
+                self.displayLabel.text = digit
+            }
         }
-        
-        
+        self.userIsInTheMiddleOfTypingANumber = true
         
         println("\(digit)")
+        println("\(self.userIsInTheMiddleOfTypingANumber)")
+    }
+    
+    func enter () {
+        self.userIsInTheMiddleOfTypingANumber = false
+        self.operandStack.append(self.displayValue)
+        println("operand stack : \(self.operandStack)")
+        
+        UIView.animateWithDuration(0.1, animations: { () -> Void in
+            self.displayBackground.alpha = 0.5
+        }) { (_) -> Void in
+            UIView.animateWithDuration(0.1, animations: { () -> Void in
+                self.displayBackground.alpha = 1.0
+            })
+        }
+        
     }
 
     override func didReceiveMemoryWarning() {
