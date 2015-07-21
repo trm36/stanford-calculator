@@ -13,7 +13,6 @@ class ViewController: UIViewController {
     let displayLabel = UILabel()
     let displayBackground = UIView()
     var userIsInTheMiddleOfTypingANumber = false
-    var operandStack: Array<Double> = []
     var displayValue: Double {
         get {
             return (displayLabel.text! as NSString).doubleValue
@@ -24,6 +23,7 @@ class ViewController: UIViewController {
             self.userIsInTheMiddleOfTypingANumber = false
         }
     }
+    let brain = CalculatorBrain()
     
 
     override func viewDidLoad() {
@@ -214,35 +214,13 @@ class ViewController: UIViewController {
             enter()
         }
         
-        
-        switch operation {
-            case "÷" :
-                performOperation({ $1 / $0 })
-            case "×" :
-                performOperation({ $1 * $0 })
-            case "−" :
-                performOperation({ $1 - $0 })
-            case "+" :
-                performOperation({ $1 + $0 })
-            case "√" :
-                performOperation({ sqrt($0) })
-            default :
-                break
+        if let result = self.brain.performOperation(operation) {
+            displayValue = result
+        } else {
+            //get rid of display
+            println("error paul was talking about with display value not being an optional")
         }
-    }
     
-    private func performOperation(operation: (Double, Double) -> Double) {
-        if self.operandStack.count >= 2 {
-            self.displayValue = operation(self.operandStack.removeLast(), self.operandStack.removeLast())
-            enter()
-        }
-    }
-    
-    private func performOperation(operation: Double -> Double) {
-        if self.operandStack.count >= 1 {
-            self.displayValue = operation(self.operandStack.removeLast())
-            enter()
-        }
     }
     
     func appendDigit(sender: UIButton) {
@@ -263,8 +241,13 @@ class ViewController: UIViewController {
     
     func enter () {
         self.userIsInTheMiddleOfTypingANumber = false
-        self.operandStack.append(self.displayValue)
-        println("operand stack : \(self.operandStack)")
+        if let result = self.brain.pushOperand(self.displayValue) {
+            self.displayValue = result
+        } else {
+            // get rid of display
+            println("error paul was talking about in lecture 3")
+        }
+
         
         UIView.animateWithDuration(0.1, animations: { () -> Void in
             self.displayBackground.alpha = 0.5

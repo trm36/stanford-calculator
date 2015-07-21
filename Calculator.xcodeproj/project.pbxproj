@@ -15,6 +15,7 @@
 		34F304301B5428DD001442FF /* FLKAutoLayoutPredicateList.m in Sources */ = {isa = PBXBuildFile; fileRef = 34F3042B1B5428DD001442FF /* FLKAutoLayoutPredicateList.m */; };
 		34F304311B5428DD001442FF /* UIView+FLKAutoLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 34F3042D1B5428DD001442FF /* UIView+FLKAutoLayout.m */; };
 		34F304321B5428DD001442FF /* UIView+FLKAutoLayoutPredicate.m in Sources */ = {isa = PBXBuildFile; fileRef = 34F3042F1B5428DD001442FF /* UIView+FLKAutoLayoutPredicate.m */; };
+		34F579481B5E156D0082A6FC /* CalculatorBrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F579471B5E156D0082A6FC /* CalculatorBrain.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,7 @@
 		34F3042D1B5428DD001442FF /* UIView+FLKAutoLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+FLKAutoLayout.m"; sourceTree = "<group>"; };
 		34F3042E1B5428DD001442FF /* UIView+FLKAutoLayoutPredicate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+FLKAutoLayoutPredicate.h"; sourceTree = "<group>"; };
 		34F3042F1B5428DD001442FF /* UIView+FLKAutoLayoutPredicate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+FLKAutoLayoutPredicate.m"; sourceTree = "<group>"; };
+		34F579471B5E156D0082A6FC /* CalculatorBrain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalculatorBrain.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +89,7 @@
 			children = (
 				34F304091B54278D001442FF /* AppDelegate.swift */,
 				34F3040B1B54278D001442FF /* ViewController.swift */,
+				34F579471B5E156D0082A6FC /* CalculatorBrain.swift */,
 				34F304331B542FAB001442FF /* FLKAutolayout */,
 				34F304071B54278D001442FF /* Supporting Files */,
 				34F304291B5428DC001442FF /* Calculator-Bridging-Header.h */,
@@ -233,6 +236,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34F579481B5E156D0082A6FC /* CalculatorBrain.swift in Sources */,
 				34F304321B5428DD001442FF /* UIView+FLKAutoLayoutPredicate.m in Sources */,
 				34F304301B5428DD001442FF /* FLKAutoLayoutPredicateList.m in Sources */,
 				34F304311B5428DD001442FF /* UIView+FLKAutoLayout.m in Sources */,
